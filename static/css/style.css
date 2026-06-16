@@ -51,6 +51,110 @@
     --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Light Mode Custom Properties & Elemental Overrides */
+body.light-theme {
+    --bg-app: #f1f5f9; /* Slate-100 */
+    --bg-card: #ffffff;
+    --bg-card-hover: #f8fafc; /* Slate-50 */
+    --bg-card-selected: #eff6ff; /* Blue-50 */
+    --border-color: #cbd5e1; /* Slate-300 */
+    --border-color-glow: #94a3b8;
+    
+    --text-main: #0f172a; /* Slate-900 */
+    --text-muted: #475569; /* Slate-600 */
+    --text-dark: #94a3b8;
+    
+    --color-feature-bg: rgba(16, 185, 129, 0.15);
+    --color-issue-bg: rgba(244, 63, 94, 0.15);
+    --color-change-bg: rgba(245, 158, 11, 0.15);
+    --color-other-bg: rgba(139, 92, 246, 0.15);
+    
+    --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.06);
+    --shadow-md: 0 10px 20px rgba(15, 23, 42, 0.08);
+    --shadow-glow: 0 0 15px rgba(99, 102, 241, 0.08);
+    
+    background-image: 
+        radial-gradient(at 10% 20%, rgba(99, 102, 241, 0.03) 0px, transparent 50%),
+        radial-gradient(at 90% 80%, rgba(14, 165, 233, 0.03) 0px, transparent 50%);
+}
+
+body.light-theme .search-box input {
+    background-color: #ffffff;
+}
+
+body.light-theme textarea {
+    background-color: #ffffff;
+}
+
+body.light-theme .feed-toolbar {
+    background: rgba(203, 213, 225, 0.25);
+}
+
+body.light-theme .app-header {
+    background: rgba(255, 255, 255, 0.8);
+}
+
+body.light-theme .status-indicator {
+    background: rgba(15, 23, 42, 0.04);
+}
+
+body.light-theme .loaded-context {
+    background: rgba(15, 23, 42, 0.02);
+}
+
+body.light-theme .pill {
+    background: rgba(15, 23, 42, 0.03);
+}
+
+body.light-theme .pill:hover {
+    background: rgba(15, 23, 42, 0.06);
+}
+
+body.light-theme .pill.active {
+    background: var(--color-primary);
+    color: #ffffff;
+}
+
+body.light-theme .date-header {
+    background: var(--bg-card);
+}
+
+body.light-theme .update-card {
+    background: rgba(15, 23, 42, 0.01);
+}
+
+body.light-theme .update-card:hover {
+    background: var(--bg-card-hover);
+}
+
+body.light-theme .update-card.selected {
+    background: var(--bg-card-selected);
+}
+
+body.light-theme .update-description code {
+    background: rgba(15, 23, 42, 0.06);
+}
+
+/* Theme Toggle Button Specific Styles */
+#theme-toggle-btn {
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-fast);
+}
+
+body.light-theme .theme-icon-sun {
+    display: none;
+}
+
+body.light-theme .theme-icon-moon {
+    display: block !important;
+}
+
 /* Global resets & Base Styles */
 * {
     margin: 0;
@@ -324,6 +428,14 @@ body {
 }
 
 .filter-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    width: 100%;
+}
+
+.filter-group {
     display: flex;
     align-items: center;
     gap: 0.75rem;

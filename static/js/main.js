@@ -151,6 +151,63 @@ document.addEventListener('DOMContentLoaded', () => {
                 .then(() => showToast('Tweet copied to clipboard!', 'success'))
                 .catch(() => showToast('Failed to copy text', 'error'));
         });
+
+        // Theme Toggle (Persisted in LocalStorage)
+        const themeToggleBtn = document.getElementById('theme-toggle-btn');
+        const sunIcon = themeToggleBtn.querySelector('.theme-icon-sun');
+        const moonIcon = themeToggleBtn.querySelector('.theme-icon-moon');
+        
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-theme');
+            sunIcon.style.display = 'none';
+            moonIcon.style.display = 'block';
+        }
+        
+        themeToggleBtn.addEventListener('click', () => {
+            const isLight = document.body.classList.toggle('light-theme');
+            if (isLight) {
+                localStorage.setItem('theme', 'light');
+                sunIcon.style.display = 'none';
+                moonIcon.style.display = 'block';
+                showToast('Switched to Light theme', 'success');
+            } else {
+                localStorage.setItem('theme', 'dark');
+                sunIcon.style.display = 'block';
+                moonIcon.style.display = 'none';
+                showToast('Switched to Dark theme', 'success');
+            }
+        });
+
+        // Export to CSV
+        const exportCsvBtn = document.getElementById('export-csv-btn');
+        exportCsvBtn.addEventListener('click', () => {
+            if (state.filteredUpdates.length === 0) {
+                showToast('No updates to export', 'error');
+                return;
+            }
+            
+            const csvRows = [["Date", "Type", "Description", "Link"]];
+            state.filteredUpdates.forEach(upd => {
+                csvRows.push([upd.date, upd.type, upd.text, upd.link]);
+            });
+            
+            const csvString = csvRows.map(row => 
+                row.map(value => `"${value.replace(/"/g, '""')}"`).join(',')
+            ).join('\n');
+            
+            const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `bigquery_release_notes_${state.currentFilter}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showToast(`Exported ${state.filteredUpdates.length} updates!`, 'success');
+        });
     }
 
     // Helper to add String.prototype.strip if not available
@@ -331,6 +388,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="update-card-header">
                         <span class="type-badge ${semanticClass}">${upd.type}</span>
                         <div class="card-actions">
+                            <button class="action-trigger copy-card-trigger" title="Copy text to clipboard" style="margin-right: 0.35rem;">
+                                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                </svg>
+                            </button>
                             <button class="action-trigger share-trigger" title="Select to Tweet">
                                 <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
                                     <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
@@ -351,6 +414,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     state.selectedUpdate = upd;
                     loadUpdateIntoComposer(upd);
+                });
+
+                // Add Card Copy Button Click Event
+                const copyBtn = updateCard.querySelector('.copy-card-trigger');
+                copyBtn.addEventListener('click', (e) => {
+                    e.stopPropagation(); // prevent selection of card
+                    navigator.clipboard.writeText(upd.text)
+                        .then(() => showToast('Update copied to clipboard!', 'success'))
+                        .catch(() => showToast('Failed to copy text', 'error'));
                 });
                 
                 dateGroup.appendChild(updateCard);
